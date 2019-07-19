@@ -19,7 +19,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run: bash -c 'node check-output.js output'
+      - run: node check-output.js output
 
 workflows:
   version: 2
