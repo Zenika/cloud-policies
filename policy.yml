@@ -1,0 +1,10 @@
+policies:
+  - name: iam-users-with-active-keys
+    resource: iam-user
+    filters:
+      - type: access-key
+        key: Status
+        value: Active
+      - type: group
+        key: GroupName
+        value: admins
