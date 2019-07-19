@@ -3,7 +3,7 @@ version: 2
 jobs:
   check-policies:
     docker:
-      - image: cloudcustodian/c7n
+      - image: cloudcustodian/c7n:0.8.44.2
     steps:
       - checkout
       - run: custodian run --verbose --output-dir ./output policy.yml
