@@ -1,15 +1,43 @@
 version: 2
 
 jobs:
-  check-policies:
+  run-policies:
     docker:
       - image: cloudcustodian/c7n:0.8.44.2
     steps:
       - checkout
       - run: custodian run --verbose --output-dir ./output policy.yml
+      - store_artifacts:
+          path: ./output
+      - persist_to_workspace:
+          root: ./
+          paths: [output/]
+  check-policies:
+    docker:
+      - image: node:12
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run: node check-output.js output
 
 workflows:
   version: 2
   check-policies:
     jobs:
-      - check-policies
+      - run-policies
+      - check-policies:
+          requires:
+            - run-policies
+  check-policies-nightly:
+    jobs:
+      - run-policies
+      - check-policies:
+          requires:
+            - run-policies
+    triggers:
+      - schedule:
+          cron: 0 7 * * 1-5
+          filters:
+            branches:
+              only: master
