@@ -4,6 +4,10 @@ const path = require("path");
 
 process.argv
   .slice(2)
+  .map(folder => path.join(__dirname, folder))
+  .flatMap(folder =>
+    fs.readdirSync(folder).map(file => path.join(folder, file))
+  )
   .flatMap(folder =>
     fs.readdirSync(folder).map(file => path.join(folder, file))
   )
@@ -14,6 +18,6 @@ process.argv
   .forEach(([file, resources]) =>
     assert(
       resources.length === 0,
-      "policy filter found matching resource: " + file
+      "policy filter found matching resource: " + path.relative(__dirname, file)
     )
   );
