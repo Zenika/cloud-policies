@@ -1,0 +1,40 @@
+version: 2
+
+jobs:
+  deploy:
+    docker:
+      - image: circleci/node:12
+    environment:
+      CLEVER_APP_ID: app_981f6cd7-1fc3-453d-97dc-ae53d894585d
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Prepare deployment folder
+          command: |
+            mkdir ~/deploy
+            cd ~/deploy
+            cp ~/project/Dockerfile Dockerfile
+            git config --global user.email "dsi-ext@zenika.com"
+            git config --global user.name "Zenika"
+            git init
+            git add .
+            git commit -m "deploy!"
+      - run:
+          name: Deploy to Clever Cloud
+          working_directory: ~/deploy
+          command: |
+            sudo npm install --global clever-tools
+            clever login --secret=$CLEVER_SECRET --token=$CLEVER_TOKEN
+            clever link $CLEVER_APP_ID
+            clever deploy --force
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy:
+          context: clever-cloud-zenika-dev
+          filters:
+            branches:
+              only: [master, ci]
