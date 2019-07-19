@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:12
     environment:
-      CLEVER_APP_ID: app_981f6cd7-1fc3-453d-97dc-ae53d894585d
+      CLEVER_APP_ID: app_75256fce-3bbc-4cac-93d1-62a1a557fea7
     steps:
       - checkout
       - attach_workspace:
@@ -37,4 +37,4 @@ workflows:
           context: clever-cloud-zenika-dev
           filters:
             branches:
-              only: [master,ci]
+              only: [master, ci]
