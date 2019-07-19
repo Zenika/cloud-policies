@@ -8,3 +8,9 @@ policies:
       - type: group
         key: GroupName
         value: admins
+  - name: ec2-5-days-plus
+    resource: ec2
+    filters:
+      - type: instance-age
+        op: ge
+        minutes: 1
