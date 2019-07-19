@@ -10,6 +10,6 @@ jobs:
 
 workflows:
   version: 2
-  deploy:
+  check-policies:
     jobs:
       - check-policies
