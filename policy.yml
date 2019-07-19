@@ -13,4 +13,4 @@ policies:
     filters:
       - type: instance-age
         op: ge
-        minutes: 1
+        days: 5
