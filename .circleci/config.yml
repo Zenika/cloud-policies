@@ -37,4 +37,4 @@ workflows:
           context: clever-cloud-zenika-dev
           filters:
             branches:
-              only: [master, ci]
+              only: [master,ci]
