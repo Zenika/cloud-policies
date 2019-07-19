@@ -29,3 +29,6 @@ workflows:
       - check-policies:
           requires:
             - run-policies
+    triggers:
+      - schedule:
+          cron: 0 0 * * *
