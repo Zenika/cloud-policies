@@ -31,4 +31,4 @@ workflows:
             - run-policies
     triggers:
       - schedule:
-          cron: 0 7 * * *
+          cron: 0 7 * * 1-5
