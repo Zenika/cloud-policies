@@ -6,7 +6,30 @@ jobs:
       - image: cloudcustodian/c7n:0.8.44.2
     steps:
       - checkout
-      - run: custodian run --verbose --output-dir ./output policy.yml
+      # Regions are explicitly listed because running against all regions fails
+      # on region ap-east-1.
+      # See https://github.com/boto/boto3/issues/2022
+      - run: >
+          custodian run 
+          --verbose 
+          --output-dir ./output 
+          --region ap-northeast-1 
+          --region ap-northeast-2 
+          --region ap-south-1 
+          --region ap-southeast-1 
+          --region ap-southeast-2 
+          --region ca-central-1 
+          --region eu-central-1 
+          --region eu-north-1 
+          --region eu-west-1 
+          --region eu-west-2 
+          --region eu-west-3 
+          --region sa-east-1 
+          --region us-east-1 
+          --region us-east-2 
+          --region us-west-1 
+          --region us-west-2 
+          policy.yml
       - store_artifacts:
           path: ./output
       - persist_to_workspace:
