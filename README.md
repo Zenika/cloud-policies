@@ -1,11 +1,12 @@
 # cloud-policies
+
 Policies to manage our cloud services
 
-This project used [cloud-custodian](https://github.com/cloud-custodian/cloud-custodian) policies.
+This project uses [cloud-custodian](https://github.com/cloud-custodian/cloud-custodian) policies.
 
 ## Launch it locally
 
-You can use the cloud-custodian image for local tests
+You can use the cloud-custodian docker image for local tests:
 
 ```
 docker container run --rm -it -v $(pwd)/output:/home/custodian/output \
