@@ -1,10 +1,19 @@
 policies:
-  - name: iam-users-with-active-keys
+  - name: admins-with-active-key
     resource: iam-user
     filters:
       - type: access-key
         key: Status
         value: Active
+      - type: group
+        key: GroupName
+        value: admins
+  - name: admins-without-mfa
+    resource: iam-user
+    filters:
+      - type: credential
+        key: mfa_active
+        value: false
       - type: group
         key: GroupName
         value: admins
