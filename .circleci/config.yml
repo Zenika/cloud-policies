@@ -11,8 +11,7 @@ jobs:
       # See https://github.com/boto/boto3/issues/2022
       - run: >
           custodian run 
-          --verbose 
-          --output-dir ./output 
+          --output-dir ./output-<< parameters.account >> 
           --region ap-northeast-1 
           --region ap-northeast-2 
           --region ap-south-1 
@@ -29,12 +28,12 @@ jobs:
           --region us-east-2 
           --region us-west-1 
           --region us-west-2 
-          policy.yml
+          policy-<< parameters.account >>.yml
       - store_artifacts:
-          path: ./output
+          path: ./output-<< parameters.account >>
       - persist_to_workspace:
           root: ./
-          paths: [output/]
+          paths: [output-<< parameters.account >>/]
   check-policies:
     docker:
       - image: node:12
@@ -42,22 +41,28 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run: node check-output.js output
+      - run: node check-output.js output-<< parameters.account >>
 
 workflows:
   version: 2
   check-policies:
     jobs:
-      - run-policies
+      - run-policies:
+          name: run-policies-training
+          account: training
       - check-policies:
+          account: training
           requires:
-            - run-policies
+            - run-policies-training
   check-policies-nightly:
     jobs:
-      - run-policies
+      - run-policies:
+          name: run-policies-training
+          account: training
       - check-policies:
+          account: training
           requires:
-            - run-policies
+            - run-policies-training
     triggers:
       - schedule:
           cron: 0 7 * * 1-5
