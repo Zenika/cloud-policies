@@ -14,7 +14,7 @@ const matchingResources = process.argv
     file,
     JSON.parse(fs.readFileSync(path.join(file + "/resources.json").toString()))
   ])
-  .filter(([file, resources]) => resources.length == 0)
+  .filter(([file, resources]) => resources.length !== 0)
   .map(([file, resources]) => file);
 
 if (matchingResources.length > 0) {
