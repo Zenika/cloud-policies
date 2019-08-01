@@ -1,8 +1,7 @@
-const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 
-process.argv
+const matchingResources = process.argv
   .slice(2)
   .map(folder => path.join(__dirname, folder))
   .flatMap(folder =>
@@ -15,9 +14,10 @@ process.argv
     file,
     JSON.parse(fs.readFileSync(path.join(file + "/resources.json").toString()))
   ])
-  .forEach(([file, resources]) =>
-    assert(
-      resources.length === 0,
-      "policy filter found matching resource: " + path.relative(__dirname, file)
-    )
-  );
+  .filter(([file, resources]) => resources.length !== 0)
+  .map(([file, resources]) => file);
+
+if (matchingResources.length > 0) {
+  console.error(`There is some problems with resources present in the following files ${matchingResources.join(", ")}`)
+  return process.exit(1);
+}
