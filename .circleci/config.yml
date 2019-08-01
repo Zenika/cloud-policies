@@ -39,6 +39,10 @@ jobs:
           root: ./
           paths: [output-<< parameters.account >>/]
   check-policies:
+    parameters:
+      account:
+        description: "Which account we are running the policy check"
+        type: string
     docker:
       - image: node:12
     steps:
