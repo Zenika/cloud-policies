@@ -80,10 +80,12 @@ workflows:
           name: run-policies-ops
           account: ops
       - check-policies:
+          name: check-policies-training
           account: training
           requires:
             - run-policies-training
       - check-policies:
+          name: check-policies-ops
           account: ops
           requires:
             - run-policies-ops
