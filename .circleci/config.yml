@@ -1,7 +1,11 @@
-version: 2
+version: 2.1
 
 jobs:
   run-policies:
+    parameters:
+      account:
+        description: "Which account we are running the policy check"
+        type: string
     docker:
       - image: cloudcustodian/c7n:0.8.44.2
     steps:
@@ -10,9 +14,10 @@ jobs:
       # on region ap-east-1.
       # See https://github.com/boto/boto3/issues/2022
       - run: >
+          AWS_ACCESS_KEY_ID="$<< parameters.account >>_AWS_ACCESS_KEY_ID"
+          AWS_SECRET_ACCESS_KEY="$<< parameters.account >>_AWS_SECRET_ACCESS_KEY"
           custodian run 
-          --verbose 
-          --output-dir ./output 
+          --output-dir ./output-<< parameters.account >> 
           --region ap-northeast-1 
           --region ap-northeast-2 
           --region ap-south-1 
@@ -29,35 +34,61 @@ jobs:
           --region us-east-2 
           --region us-west-1 
           --region us-west-2 
-          policy.yml
+          policy-<< parameters.account >>.yml
       - store_artifacts:
-          path: ./output
+          path: ./output-<< parameters.account >>
       - persist_to_workspace:
           root: ./
-          paths: [output/]
+          paths: [output-<< parameters.account >>/]
   check-policies:
+    parameters:
+      account:
+        description: "Which account we are running the policy check"
+        type: string
     docker:
       - image: node:12
     steps:
       - checkout
       - attach_workspace:
           at: ./
-      - run: node check-output.js output
+      - run: node check-output.js output-<< parameters.account >>
 
 workflows:
   version: 2
   check-policies:
     jobs:
-      - run-policies
+      - run-policies:
+          name: run-policies-training
+          account: training
+      - run-policies:
+          name: run-policies-ops
+          account: ops
       - check-policies:
+          account: training
           requires:
-            - run-policies
+            - run-policies-training
+      - check-policies:
+          account: ops
+          requires:
+            - run-policies-ops
   check-policies-nightly:
     jobs:
-      - run-policies
+      - run-policies:
+          name: run-policies-training
+          account: training
+      - run-policies:
+          name: run-policies-ops
+          account: ops
       - check-policies:
+          name: check-policies-training
+          account: training
           requires:
-            - run-policies
+            - run-policies-training
+      - check-policies:
+          name: check-policies-ops
+          account: ops
+          requires:
+            - run-policies-ops
     triggers:
       - schedule:
           cron: 0 7 * * 1-5
