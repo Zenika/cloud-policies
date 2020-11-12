@@ -60,35 +60,20 @@ workflows:
       - run-policies:
           name: run-policies-training
           account: training
-      - run-policies:
-          name: run-policies-ops
-          account: ops
       - check-policies:
           account: training
           requires:
             - run-policies-training
-      - check-policies:
-          account: ops
-          requires:
-            - run-policies-ops
   check-policies-nightly:
     jobs:
       - run-policies:
           name: run-policies-training
           account: training
-      - run-policies:
-          name: run-policies-ops
-          account: ops
       - check-policies:
           name: check-policies-training
           account: training
           requires:
             - run-policies-training
-      - check-policies:
-          name: check-policies-ops
-          account: ops
-          requires:
-            - run-policies-ops
     triggers:
       - schedule:
           cron: 0 7 * * 1-5
